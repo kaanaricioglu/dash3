@@ -12,13 +12,13 @@ body {
 
 .sidebar {
     width: 210px;
-    height: 950px;
+    height: 800px;
     background-color: #ffffff;
     padding: 25px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
     border-radius: 12px;
     position: fixed;
-    top: 44px;
+    top: 60px;
     left: 20px;
     z-index: 1000;
     transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out; /* Smooth transition */
@@ -246,8 +246,8 @@ body {
     background-color: #ffffff;
     padding: 25px;
     position: relative;
-    margin-top: 45px;
-    height: calc(100vh - 50px);
+    margin-top: 60px;
+    height: 800px;
     margin-left: 300px; /* Adjusted margin to account for the fixed sidebar */
     overflow: scroll;
 }
