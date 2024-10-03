@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Head content remains unchanged -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Research Report</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <!-- TradingView Ticker Tape Widget -->
+    <div class="ticker-tape-container">
+    <div class="tradingview-widget-container">
+        <div class="tradingview-widget-container__widget"></div>
+        <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
+            {
+                "symbols": [
+                    {"proName": "FOREXCOM:SPXUSD", "title": "S&P 500 Index"},
+                    {"proName": "BITSTAMP:BTCUSD", "title": "Bitcoin"},
+                    {"proName": "BITSTAMP:ETHUSD", "title": "Ethereum"},
+                    {"description": "Apple", "proName": "NASDAQ:AAPL"},
+                    {"description": "Gold", "proName": "FOREXCOM:XAUUSD"},
+                    {"description": "Lockheed", "proName": "NYSE:LMT"},
+                    {"description": "Nvidia", "proName": "NASDAQ:NVDA"},
+                    {"description": "Palo Alto", "proName": "NASDAQ:PANW"},
+                    {"description": "UI Path", "proName": "NYSE:PATH"}
+                ],
+                "showSymbolLogo": true,
+                "isTransparent": false,
+                "displayMode": "regular",
+                "colorTheme": "light",
+                "locale": "en"
+            }
+        </script>
+    </div>
+    </div>
+
+    <!-- Spinner Container -->
+    <div id="loading-spinner" class="spinner-container">
+        <div class="spinner"></div>
+    </div>
+    <div class="dashboard-layout">
+        <!-- Sidebar -->
+      <div class="hamburger-menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+        <div class="sidebar">
+            <h2 class="sidebar-title">Stock Tracker</h2>
+            <nav class="sidebar-menu">
+                <a href="/" class="menu-item {% if request.endpoint == 'index' %}active{% endif %}">Dashboard</a>
+                <a href="/daily-report" class="menu-item {% if request.endpoint == 'daily_report' %}active{% endif %}">Research Hub</a>
+                <a href="/saved-reports" class="menu-item {% if request.endpoint == 'saved_reports' %}active{% endif %}">Saved Reports</a>
+            </nav>
+
+            <!-- Stock Picker -->
+            <div class="stock-picker">
+                <label for="stock-symbol">Select Stock:</label>
+                <div class="input-container">
+                    <form id="stock-form" method="POST" action="{{ url_for('daily_report') }}">
+                        <input type="text" id="stock-symbol" name="stock-symbol" placeholder="Enter Stock Symbol" required>
+                        <button id="update-symbol" type="submit">
+                            <svg xmlns="http://www.w3.org/2000/svg" height="16" viewBox="0 0 24 24" width="16">
+                                <path d="M0 0h24v24H0z" fill="none"/>
+                                <path d="M19 13H5v-2h14v2zM13 5v14h-2V5h2z"/>
+                            </svg>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+          <div class="content-wrapper">
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+              {% if messages %}
+                {% for category, message in messages %}
+                  <div class="flash {{ category }}">{{ message }}</div>
+                {% endfor %}
+              {% endif %}
+            {% endwith %}
+
+            {% if report %}
+                <div id="report-content" class="grid-container">
+                    <!-- Report Sections -->
+                    <div class="grid-item height-small">
+                        {{ report['title_and_date'] | safe }}
+                    </div>
+                    <div class="grid-item height-small">
+                        {{ report['company_profile'] | safe }}
+                    </div>
+                    <div class="grid-item height-medium">
+                        {{ report['financial_summary'] | safe }}
+                    </div>
+                    <div class="grid-item height-medium">
+                        {{ report['long_term_outlook'] | safe }}
+                    </div>
+                    <div class="grid-item height-medium span-full-grid">
+                        {{ report['analysis'] | safe }}
+                    </div>
+                    <div class="grid-item height-small">
+                        {{ report['action_recommendation'] | safe }}
+                    </div>
+                    <div class="grid-item height-small">
+                        {{ report['short_term_outlook'] | safe }}
+                    </div>
+                    
+                  <!-- Save Report Form -->
+                  <form id="save-report-form" method="POST" action="{{ url_for('daily_report') }}">
+                    <input type="hidden" name="save_report" value="1">
+                    <input type="hidden" name="symbol" value="{{ symbol }}">
+                    <textarea name="report-data" style="display:none;">{{ report | tojson | safe }}</textarea>
+                    <button type="submit" class="save-report-btn">Save Report</button>
+                  </form>
+    
+                </div>
+            {% else %}
+                <div class="initial-content">
+                    <h3>Start Your Market Research</h3>
+                    <p>Use the stock picker on the <strong>left</strong> to enter a stock symbol and generate your daily research report.</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+    </div>
+
+    <!-- Include the custom script.js file -->
+    <script src="/static/js/script.js"></script>
+</body>
+</html>
